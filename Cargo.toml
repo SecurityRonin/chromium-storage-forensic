@@ -1,0 +1,48 @@
+[workspace]
+resolver = "2"
+members = [
+    "chromium-storage-localstorage",
+]
+
+# Single source of truth for fields shared by every member (DRY): bump version /
+# edition / license here once; members inherit via `field.workspace = true`.
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/SecurityRonin/chromium-storage-forensic"
+authors = ["Albert Hui <albert@securityronin.com>"]
+
+[workspace.dependencies]
+# Fleet KNOWLEDGE leaf: Simple Cache / IndexedDB / Local Storage format constants
+# (Wave 1). Path dep until the constants ship to crates.io.
+forensicnomicon-core = { path = "../../knowledge/forensicnomicon/crates/core" }
+# Panic-free bounded integer readers over untrusted bytes (the shared front door).
+safe-read = { path = "../../utility/safe-read" }
+# Raw, read-only LevelDB record reader (surfaces tombstones + sequence numbers).
+leveldb-core = { path = "../leveldb-forensic/leveldb-core" }
+# V8 / Blink structured-clone value deserializer (IndexedDB record values).
+blob-decoder = { path = "../../utility/blob-decoder", default-features = false }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all                      = { level = "warn", priority = -1 }
+pedantic                 = { level = "warn", priority = -1 }
+correctness              = { level = "deny", priority = -1 }
+suspicious               = { level = "deny", priority = -1 }
+unwrap_used              = { level = "deny", priority = 0 }
+expect_used              = { level = "deny", priority = 0 }
+module_name_repetitions  = { level = "allow", priority = 1 }
+must_use_candidate       = { level = "allow", priority = 1 }
+missing_errors_doc        = { level = "allow", priority = 1 }
+missing_panics_doc        = { level = "allow", priority = 1 }
+cast_possible_truncation = { level = "allow", priority = 1 }
+cast_possible_wrap       = { level = "allow", priority = 1 }
+cast_sign_loss           = { level = "allow", priority = 1 }
+cast_precision_loss      = { level = "allow", priority = 1 }
+too_many_lines           = { level = "allow", priority = 1 }
+items_after_statements   = { level = "allow", priority = 1 }
+similar_names            = { level = "allow", priority = 1 }
+manual_let_else          = { level = "allow", priority = 1 }

@@ -1,0 +1,30 @@
+[package]
+name = "chromium-storage-localstorage"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+# Published library: a deliberately LOW, CI-verified MSRV floor.
+rust-version = "1.80"
+readme = "README.md"
+description = "Chromium Local Storage (DOM Storage on LevelDB) reader — decodes per-origin META records (WebKit-microsecond timestamps) and type-prefixed key/value pairs (UTF-16LE / Latin-1) using forensicnomicon-core schema constants. Panic-free, fuzzed."
+
+[lib]
+name = "chromium_storage_localstorage"
+path = "src/lib.rs"
+
+[dependencies]
+forensicnomicon-core = { workspace = true }
+safe-read = { workspace = true }
+leveldb-core = { workspace = true }
+
+[dev-dependencies]
+# Independent oracle: write real Chrome-shaped Local Storage records into a real
+# LevelDB, then decode them back through the full stack (ground truth derivable
+# from the construction).
+rusty-leveldb = "4"
+tempfile = "3"
+
+[lints]
+workspace = true
