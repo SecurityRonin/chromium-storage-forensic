@@ -1,0 +1,22 @@
+[package]
+name = "chromium-storage-cache"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+# Published library: a deliberately LOW, CI-verified MSRV floor.
+rust-version = "1.80"
+readme = "README.md"
+description = "Chromium Simple Cache reader — decodes the *_0 entry files (URL/key, HTTP request/response headers, body, timestamps) using forensicnomicon-core format constants. Panic-free, bounds-checked, fuzzed."
+
+[lib]
+name = "chromium_storage_cache"
+path = "src/lib.rs"
+
+[dependencies]
+forensicnomicon-core = { workspace = true }
+safe-read = { workspace = true }
+
+[lints]
+workspace = true

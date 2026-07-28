@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "chromium-storage-cache",
     "chromium-storage-localstorage",
 ]
 
