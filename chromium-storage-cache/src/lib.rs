@@ -88,10 +88,9 @@ pub fn read_dir(dir: &Path) -> std::io::Result<Vec<(PathBuf, Result<CacheEntry, 
     let mut out = Vec::with_capacity(paths.len());
     for path in paths {
         // A per-file read error is a per-artifact miss after a validated
-        // directory bootstrap: record it against the path, keep going.
-        match std::fs::read(&path) {
-            Ok(buf) => out.push((path, parse_entry(&buf))),
-            Err(_) => continue,
+        // directory bootstrap: skip it, keep reading the rest.
+        if let Ok(buf) = std::fs::read(&path) {
+            out.push((path, parse_entry(&buf)));
         }
     }
     Ok(out)
