@@ -66,12 +66,11 @@ fn decode_utf16le(body: &[u8], raw: &[u8]) -> StorageValue {
     }
     let mut text = String::new();
     for unit in char::decode_utf16(units) {
-        match unit {
-            Ok(ch) => text.push(ch),
-            Err(_) => {
-                text.push('\u{FFFD}');
-                lossy = true;
-            }
+        if let Ok(ch) = unit {
+            text.push(ch);
+        } else {
+            text.push('\u{FFFD}');
+            lossy = true;
         }
     }
     StorageValue {
