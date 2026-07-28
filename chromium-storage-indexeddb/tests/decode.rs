@@ -52,7 +52,9 @@ fn decodes_the_blink_v8_value() {
     let r = note_record();
     let v = match &r.value {
         RecordValue::V8(v) => v.clone(),
-        other => panic!("expected a decoded V8 value, got {other:?}"),
+        other @ RecordValue::Undecoded { .. } => {
+            panic!("expected a decoded V8 value, got {other:?}")
+        }
     };
     assert_eq!(
         obj_get(&v, "title"),
