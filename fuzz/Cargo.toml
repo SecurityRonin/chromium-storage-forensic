@@ -1,0 +1,47 @@
+[package]
+name = "chromium-storage-forensic-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+# Standalone workspace: cargo-fuzz builds this crate in isolation, not as a
+# member of the main workspace it fuzzes.
+[workspace]
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+arbitrary = { version = "1", features = ["derive"] }
+leveldb-core = { path = "../../leveldb-forensic/leveldb-core" }
+
+[dependencies.chromium-storage-cache]
+path = "../chromium-storage-cache"
+
+[dependencies.chromium-storage-indexeddb]
+path = "../chromium-storage-indexeddb"
+
+[dependencies.chromium-storage-localstorage]
+path = "../chromium-storage-localstorage"
+
+[[bin]]
+name = "parse_cache"
+path = "fuzz_targets/parse_cache.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "decode_indexeddb"
+path = "fuzz_targets/decode_indexeddb.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "decode_localstorage"
+path = "fuzz_targets/decode_localstorage.rs"
+test = false
+doc = false
+bench = false
