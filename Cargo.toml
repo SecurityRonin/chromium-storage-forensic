@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "chromium-storage-cache",
+    "chromium-storage-indexeddb",
     "chromium-storage-localstorage",
 ]
 

@@ -1,0 +1,25 @@
+[package]
+name = "chromium-storage-indexeddb"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+# The V8/Blink value decoder (blob-decoder) pulls MSRV up to 1.88; the analysis
+# layer takes the capability bump (batteries-included) rather than gate it out.
+rust-version = "1.88"
+readme = "README.md"
+description = "Chromium IndexedDB-over-LevelDB reader — walks the LevelDB key-coding scheme, decodes each object-store record's Blink-wrapped V8 value, and emits (database, objectStore, key, decoded-value). Panic-free, fuzzed."
+
+[lib]
+name = "chromium_storage_indexeddb"
+path = "src/lib.rs"
+
+[dependencies]
+forensicnomicon-core = { workspace = true }
+safe-read = { workspace = true }
+leveldb-core = { workspace = true }
+blob-decoder = { workspace = true }
+
+[lints]
+workspace = true
