@@ -5,3 +5,9 @@ All notable changes to this crate are documented here. The format follows
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.1.0](https://github.com/SecurityRonin/chromium-storage-forensic/releases/tag/chromium-storage-localstorage-v0.1.0) - 2026-07-29
+
+### Added
+
+- *(localstorage)* GREEN — decode Local Storage records
