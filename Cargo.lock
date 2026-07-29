@@ -22,7 +22,9 @@ checksum = "b588b76d00fde79687d7646a9b5bdf3cc0f655e0bbd080335a95d7e96f3587da"
 
 [[package]]
 name = "blob-decoder"
-version = "0.1.1"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "52ca1781d471e20c1e003ec2242a63176a7068f44c1e658d6fa6796e8105b071"
 dependencies = [
  "base64",
  "flate2",
@@ -178,7 +180,9 @@ dependencies = [
 
 [[package]]
 name = "forensicnomicon-core"
-version = "1.4.0"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "21800c5e29085274fbb324be30790894481c9c5faf8c659b3d0d994840ca0941"
 
 [[package]]
 name = "fs2"
@@ -290,6 +294,8 @@ dependencies = [
 [[package]]
 name = "leveldb-core"
 version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "00bdc833b0e7999e0a8a9b09e98a48b6ef657f9ae37aa7d909b5891fba2e16cd"
 dependencies = [
  "crc32c",
  "integer-encoding 4.1.0",
@@ -484,7 +490,9 @@ dependencies = [
 
 [[package]]
 name = "safe-read"
-version = "0.2.0"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64d801355149a8e005d4736b4b7c7871e65b5797c31bc9930f5a5483e8368a47"
 
 [[package]]
 name = "semver"

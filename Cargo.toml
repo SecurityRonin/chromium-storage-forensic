@@ -16,16 +16,15 @@ repository = "https://github.com/SecurityRonin/chromium-storage-forensic"
 authors = ["Albert Hui <albert@securityronin.com>"]
 
 [workspace.dependencies]
-# Fleet crates: `version + path` so the local checkout builds while the semver
-# requirement is honest (no wildcard) and consumers get the registry version once
-# each is published. Switch to registry-only once all are on crates.io.
-forensicnomicon-core = { version = "1", path = "../../knowledge/forensicnomicon/crates/core" }
+# Fleet crates: published on crates.io — registry versions (honest carets, no path).
+forensicnomicon-core = "1.5"
 # Panic-free bounded integer readers over untrusted bytes (the shared front door).
-safe-read = { version = "0.2", path = "../../utility/safe-read" }
+safe-read = "0.2"
 # Raw, read-only LevelDB record reader (surfaces tombstones + sequence numbers).
-leveldb-core = { version = "0.1", path = "../leveldb-forensic/leveldb-core" }
+leveldb-core = "0.1"
 # V8 / Blink structured-clone value deserializer (IndexedDB record values).
-blob-decoder = { version = "0.1", path = "../../utility/blob-decoder", default-features = false }
+# `default-features = false` drops the CLI (clap) — the lean library build.
+blob-decoder = { version = "0.2", default-features = false }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
