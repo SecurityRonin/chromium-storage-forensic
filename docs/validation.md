@@ -47,15 +47,16 @@ The committed LevelDB directories and `_0` entry files are small and checked in;
 re-minting reproduces equivalent artifacts (byte layout is stable; hashes and
 timestamps differ per run).
 
-## Open scaffolding
+## Supply-chain and coverage gates
 
-Two fleet-standard gates are scaffolded but **not yet enabled in CI**, pending a
-run that regenerates their machine state:
+Two fleet-standard gates are wired into CI and enforced on every push:
 
-- **cargo-vet** — `supply-chain/config.toml` declares the imports + our
-  first-party crates; the per-version third-party `[[exemptions]]` block must be
-  generated with `cargo vet` against the resolved graph before the vet job is
-  turned on.
-- **Coverage gate** — the 100 %-line `cargo llvm-cov` gate is not yet wired; the
-  readers are exercised end-to-end by the T2 tests, but the ratchet job should be
-  added once a baseline run confirms the number.
+- **cargo-vet** — `supply-chain/config.toml` declares the aggregate-audit imports
+  and our own workspace members as first-party; the remaining audit-lagged
+  dependency versions carry authored audit records in `supply-chain/audits.toml`.
+  `cargo vet --locked` reports *Vetting Succeeded*; the `vet` CI job enforces it.
+- **Coverage gate** — `cargo llvm-cov --all-features` feeds
+  `scripts/coverage-gate.py`, which requires 100 % function coverage of each
+  reader's library (honoring `// cov:unreachable` markers on provably-dead
+  defensive arms). The `coverage` CI job runs the gate and uploads lcov to
+  Codecov.

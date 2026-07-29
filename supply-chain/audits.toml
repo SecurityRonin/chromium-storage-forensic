@@ -1,0 +1,367 @@
+
+# cargo-vet audits file
+
+[[audits.bitflags]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "2.13.1"
+
+[[audits.blob-decoder]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.0"
+
+[[audits.bytes]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "1.12.1"
+
+[[audits.cc]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "1.4.0"
+
+[[audits.cfg-if]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.4"
+
+[[audits.crc32c]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.6.8"
+
+[[audits.crc32fast]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.5.0"
+
+[[audits.errno]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.2.8"
+
+[[audits.errno]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.3.14"
+
+[[audits.fastrand]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "2.5.0"
+
+[[audits.find-msvc-tools]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.1.9"
+
+[[audits.flate2]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.1.9"
+
+[[audits.forensicnomicon-core]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.5.0"
+
+[[audits.fs2]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.4.3"
+
+[[audits.futures-core]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.3.33"
+
+[[audits.futures-task]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.3.33"
+
+[[audits.futures-util]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.3.33"
+
+[[audits.getrandom]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.2.17"
+
+[[audits.getrandom]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.4.3"
+
+[[audits.hashbrown]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.17.1"
+
+[[audits.indexmap]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "2.14.0"
+
+[[audits.integer-encoding]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "3.0.4"
+
+[[audits.integer-encoding]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "4.1.0"
+
+[[audits.itoa]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.18"
+
+[[audits.js-sys]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.3.103"
+
+[[audits.leveldb-core]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.1.1"
+
+[[audits.libc]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.2.189"
+
+[[audits.linux-raw-sys]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.12.1"
+
+[[audits.memchr]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "2.8.3"
+
+[[audits.num-conv]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.2"
+
+[[audits.once_cell]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.21.4"
+
+[[audits.pin-project-lite]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.17"
+
+[[audits.plist]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.10.0"
+
+[[audits.proc-macro2]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.107"
+
+[[audits.protobuf-forensic-core]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.1.1"
+
+[[audits.quick-xml]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.41.0"
+
+[[audits.r-efi]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "6.0.0"
+
+[[audits.rand]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.8.7"
+
+[[audits.rustc_version]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.4.1"
+
+[[audits.rustix]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "1.1.4"
+
+[[audits.rustversion]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.23"
+
+[[audits.rusty-leveldb]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "4.0.1"
+
+[[audits.safe-read]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.1"
+
+[[audits.semver]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.28"
+
+[[audits.serde]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.229"
+
+[[audits.serde_core]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.229"
+
+[[audits.serde_derive]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.229"
+
+[[audits.serde_json]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.151"
+
+[[audits.shlex]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "2.0.1"
+
+[[audits.simd-adler32]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.3.10"
+
+[[audits.slab]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.4.12"
+
+[[audits.snap]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.1.2"
+
+[[audits.syn]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "2.0.119"
+
+[[audits.syn]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "3.0.3"
+
+[[audits.thiserror]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "2.0.19"
+
+[[audits.thiserror-impl]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "2.0.19"
+
+[[audits.time]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.3.54"
+
+[[audits.time-core]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.1.9"
+
+[[audits.time-macros]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.32"
+
+[[audits.unicode-ident]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.24"
+
+[[audits.uuid]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.24.0"
+
+[[audits.wasi]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.11.1+wasi-snapshot-preview1"
+
+[[audits.wasm-bindgen]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.126"
+
+[[audits.wasm-bindgen-macro]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.126"
+
+[[audits.wasm-bindgen-macro-support]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.126"
+
+[[audits.wasm-bindgen-shared]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "0.2.126"
+
+[[audits.winapi-i686-pc-windows-gnu]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.4.0"
+
+[[audits.winapi-x86_64-pc-windows-gnu]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.4.0"
+
+[[audits.windows-link]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.2.1"
+
+[[audits.windows-sys]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.61.2"
+
+[[audits.zerocopy]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.8.55"
+
+[[audits.zerocopy-derive]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-run"
+version = "0.8.55"
+
+[[audits.zmij]]
+who = "Albert Hui <i@hack9u.online>"
+criteria = "safe-to-deploy"
+version = "1.0.23"
