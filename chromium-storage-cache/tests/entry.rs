@@ -120,6 +120,43 @@ fn oversized_key_length_is_rejected() {
 }
 
 #[test]
+fn errors_display_the_offending_value_and_offset() {
+    // Every CacheError renders fail-loud: the offending value travels with the
+    // message. Derive each variant from parse_entry (not a hand-built enum) and
+    // assert on its Display, so the reader always gets the evidence.
+
+    // TooShort: an empty buffer reports the available count and the 24-byte need.
+    let too_short = parse_entry(&[]).unwrap_err().to_string();
+    assert!(
+        too_short.contains("too short")
+            && too_short.contains("0 bytes")
+            && too_short.contains("24"),
+        "TooShort display was {too_short:?}"
+    );
+
+    // BadMagic: the eight bytes found are shown verbatim (hex).
+    let mut wrong = vec![0u8; 32];
+    wrong[..8].copy_from_slice(&[0xde, 0xad, 0xbe, 0xef, 0x01, 0x02, 0x03, 0x04]);
+    let bad_magic = parse_entry(&wrong).unwrap_err().to_string();
+    assert!(
+        bad_magic.contains("bad Simple Cache entry magic")
+            && bad_magic.contains("de")
+            && bad_magic.contains("ef"),
+        "BadMagic display was {bad_magic:?}"
+    );
+
+    // KeyLengthOutOfRange: the declared length and the available byte count.
+    let mut oversized = vec![0u8; 24];
+    oversized[..8].copy_from_slice(&0xfcfb_6d1b_a772_5c30u64.to_le_bytes());
+    oversized[12..16].copy_from_slice(&0xffff_ffffu32.to_le_bytes()); // key_length
+    let out_of_range = parse_entry(&oversized).unwrap_err().to_string();
+    assert!(
+        out_of_range.contains("key_length 4294967295") && out_of_range.contains("exceeds"),
+        "KeyLengthOutOfRange display was {out_of_range:?}"
+    );
+}
+
+#[test]
 fn valid_header_without_trailers_still_yields_the_url() {
     // Header + key, but no EOF trailers (truncated entry): URL survives, body empty.
     let key = b"1/0/_dk_http://x http://x http://x/asset.js";
