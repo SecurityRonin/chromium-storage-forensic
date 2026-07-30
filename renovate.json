@@ -1,13 +1,36 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "rangeStrategy": "bump",
-  "lockFileMaintenance": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "before 5am on the first day of the month"
+    ]
+  },
   "packageRules": [
     {
-      "matchManagers": ["cargo"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "cargo"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "cargo minor/patch"
     }
-  ]
+  ],
+  "minimumReleaseAge": "21 days",
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 2,
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": null,
+    "labels": [
+      "security"
+    ],
+    "prPriority": 10
+  }
 }
