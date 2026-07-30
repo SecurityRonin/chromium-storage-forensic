@@ -6,7 +6,7 @@ license.workspace = true
 repository.workspace = true
 authors.workspace = true
 # Published library: a deliberately LOW, CI-verified MSRV floor.
-rust-version = "1.80"
+rust-version = "1.87"
 readme = "README.md"
 description = "Chromium Local Storage (DOM Storage on LevelDB) reader — decodes per-origin META records (WebKit-microsecond timestamps) and type-prefixed key/value pairs (UTF-16LE / Latin-1) using forensicnomicon-core schema constants. Panic-free, fuzzed."
 
