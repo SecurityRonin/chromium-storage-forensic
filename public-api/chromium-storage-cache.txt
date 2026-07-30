@@ -1,0 +1,26 @@
+pub mod chromium_storage_cache
+#[non_exhaustive] pub enum chromium_storage_cache::CacheError
+pub chromium_storage_cache::CacheError::BadMagic
+pub chromium_storage_cache::CacheError::BadMagic::found: [u8; 8]
+pub chromium_storage_cache::CacheError::KeyLengthOutOfRange
+pub chromium_storage_cache::CacheError::KeyLengthOutOfRange::available: usize
+pub chromium_storage_cache::CacheError::KeyLengthOutOfRange::key_length: u64
+pub chromium_storage_cache::CacheError::TooShort
+pub chromium_storage_cache::CacheError::TooShort::available: usize
+impl core::error::Error for chromium_storage_cache::CacheError
+impl core::fmt::Display for chromium_storage_cache::CacheError
+pub fn chromium_storage_cache::CacheError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct chromium_storage_cache::CacheEntry
+pub chromium_storage_cache::CacheEntry::body: alloc::vec::Vec<u8>
+pub chromium_storage_cache::CacheEntry::body_crc32: core::option::Option<u32>
+pub chromium_storage_cache::CacheEntry::headers: alloc::vec::Vec<(alloc::string::String, alloc::string::String)>
+pub chromium_storage_cache::CacheEntry::key: alloc::string::String
+pub chromium_storage_cache::CacheEntry::key_hash: u32
+pub chromium_storage_cache::CacheEntry::key_sha256: core::option::Option<[u8; 32]>
+pub chromium_storage_cache::CacheEntry::request_time_webkit_micros: core::option::Option<u64>
+pub chromium_storage_cache::CacheEntry::response_time_webkit_micros: core::option::Option<u64>
+pub chromium_storage_cache::CacheEntry::status_line: core::option::Option<alloc::string::String>
+pub chromium_storage_cache::CacheEntry::url: alloc::string::String
+pub chromium_storage_cache::CacheEntry::version: u32
+pub fn chromium_storage_cache::parse_entry(&[u8]) -> core::result::Result<chromium_storage_cache::CacheEntry, chromium_storage_cache::CacheError>
+pub fn chromium_storage_cache::read_dir(&std::path::Path) -> std::io::error::Result<alloc::vec::Vec<(std::path::PathBuf, core::result::Result<chromium_storage_cache::CacheEntry, chromium_storage_cache::CacheError>)>>

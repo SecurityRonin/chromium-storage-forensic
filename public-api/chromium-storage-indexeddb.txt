@@ -1,0 +1,27 @@
+pub mod chromium_storage_indexeddb
+pub use chromium_storage_indexeddb::V8Value
+pub enum chromium_storage_indexeddb::IdbKey
+pub chromium_storage_indexeddb::IdbKey::Array(alloc::vec::Vec<chromium_storage_indexeddb::IdbKey>)
+pub chromium_storage_indexeddb::IdbKey::Binary(alloc::vec::Vec<u8>)
+pub chromium_storage_indexeddb::IdbKey::Date(f64)
+pub chromium_storage_indexeddb::IdbKey::Invalid(alloc::vec::Vec<u8>)
+pub chromium_storage_indexeddb::IdbKey::Min
+pub chromium_storage_indexeddb::IdbKey::Null
+pub chromium_storage_indexeddb::IdbKey::Number(f64)
+pub chromium_storage_indexeddb::IdbKey::String(alloc::string::String)
+pub enum chromium_storage_indexeddb::RecordValue
+pub chromium_storage_indexeddb::RecordValue::Undecoded
+pub chromium_storage_indexeddb::RecordValue::Undecoded::error: alloc::string::String
+pub chromium_storage_indexeddb::RecordValue::Undecoded::raw: alloc::vec::Vec<u8>
+pub chromium_storage_indexeddb::RecordValue::V8(blob_decoder::v8_value::V8Value)
+pub struct chromium_storage_indexeddb::IndexedDbRecord
+pub chromium_storage_indexeddb::IndexedDbRecord::database: core::option::Option<alloc::string::String>
+pub chromium_storage_indexeddb::IndexedDbRecord::database_id: u64
+pub chromium_storage_indexeddb::IndexedDbRecord::deleted: bool
+pub chromium_storage_indexeddb::IndexedDbRecord::key: chromium_storage_indexeddb::IdbKey
+pub chromium_storage_indexeddb::IndexedDbRecord::object_store: core::option::Option<alloc::string::String>
+pub chromium_storage_indexeddb::IndexedDbRecord::object_store_id: u64
+pub chromium_storage_indexeddb::IndexedDbRecord::seq: u64
+pub chromium_storage_indexeddb::IndexedDbRecord::value: chromium_storage_indexeddb::RecordValue
+pub fn chromium_storage_indexeddb::decode_records(&[leveldb_core::record::Record]) -> alloc::vec::Vec<chromium_storage_indexeddb::IndexedDbRecord>
+pub fn chromium_storage_indexeddb::read_dir(&std::path::Path) -> core::result::Result<alloc::vec::Vec<chromium_storage_indexeddb::IndexedDbRecord>, leveldb_core::error::Error>
