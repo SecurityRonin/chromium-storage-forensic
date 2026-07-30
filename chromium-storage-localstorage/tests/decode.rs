@@ -176,6 +176,133 @@ fn version_key_is_other() {
 }
 
 #[test]
+fn meta_record_without_the_size_field_reports_no_size() {
+    // Field 1 only (tag 0x08, ts = 300): the optional field-2 size is absent, so
+    // `size` must be None rather than a fabricated zero.
+    let out = decode_records(&[rec(b"META:http://ex.com", &[0x08, 0xAC, 0x02])]);
+    match &out[0] {
+        LocalStorageRecord::Meta {
+            timestamp_webkit_micros,
+            size,
+            ..
+        } => {
+            assert_eq!(*timestamp_webkit_micros, 300);
+            assert_eq!(*size, None);
+        }
+        other => panic!("expected Meta, got {other:?}"),
+    }
+}
+
+#[test]
+fn deleted_meta_record_surfaces_as_a_meta_tombstone() {
+    // A cleared origin: there is no protobuf to parse, but the tombstone itself
+    // is forensically meaningful (the origin's storage was wiped at this seq).
+    let mut r = rec(b"META:http://ex.com", b"");
+    r.deleted = true;
+    r.seq = 77;
+    let out = decode_records(&[r]);
+    match &out[0] {
+        LocalStorageRecord::Meta {
+            origin,
+            timestamp_webkit_micros,
+            size,
+            seq,
+            deleted,
+        } => {
+            assert_eq!(origin, "http://ex.com");
+            assert_eq!(*timestamp_webkit_micros, 0);
+            assert_eq!(*size, None);
+            assert_eq!(*seq, 77);
+            assert!(*deleted);
+        }
+        other => panic!("expected a Meta tombstone, got {other:?}"),
+    }
+}
+
+#[test]
+fn meta_record_with_an_unparseable_protobuf_falls_back_to_other() {
+    // Three ways the StorageMetadata payload can fail to parse; each must keep
+    // the raw key rather than invent a timestamp.
+    let wrong_field = rec(b"META:http://ex.com", &[0x09, 0x01]); // field 1 wire type 1
+    let overflowing = rec(b"META:http://ex.com", &[0x80; 11]); // varint > u64
+    let empty = rec(b"META:http://ex.com", b"");
+    let out = decode_records(&[wrong_field, overflowing, empty]);
+    for (i, r) in out.iter().enumerate() {
+        match r {
+            LocalStorageRecord::Other { key, .. } => {
+                assert_eq!(key, b"META:http://ex.com", "record {i}");
+            }
+            other => panic!("record {i}: expected Other, got {other:?}"),
+        }
+    }
+}
+
+#[test]
+fn a_data_prefixed_key_without_the_nul_separator_is_other() {
+    // "_" prefix but no NUL: the origin/script-key split is undefined, so the
+    // raw key is surfaced instead of being guessed at.
+    let out = decode_records(&[rec(b"_http://ex.com", b"\x01v")]);
+    match &out[0] {
+        LocalStorageRecord::Other { key, .. } => assert_eq!(key, b"_http://ex.com"),
+        other => panic!("expected Other, got {other:?}"),
+    }
+}
+
+#[test]
+fn an_empty_script_key_decodes_as_the_empty_value() {
+    // The NUL is the last byte, so the script-key body has no marker at all.
+    let out = decode_records(&[rec(b"_http://ex.com\x00", &[0x01, b'v'])]);
+    match &out[0] {
+        LocalStorageRecord::Data {
+            script_key, value, ..
+        } => {
+            assert_eq!(script_key.text, "");
+            assert_eq!(script_key.encoding, Encoding::Empty);
+            assert!(!script_key.lossy);
+            assert_eq!(value.text, "v");
+        }
+        other => panic!("expected Data, got {other:?}"),
+    }
+}
+
+#[test]
+fn a_dangling_utf16_byte_is_lossy_but_keeps_what_decoded() {
+    // Marker 0x00 (UTF-16LE) with an odd body: 'h' decodes, the trailing byte is
+    // half a code unit. The value must report itself lossy.
+    let mut key = b"_http://ex.com\x00".to_vec();
+    key.push(0x01);
+    key.extend_from_slice(b"k");
+    let out = decode_records(&[rec(&key, &[0x00, b'h', 0x00, b'i'])]);
+    match &out[0] {
+        LocalStorageRecord::Data { value, .. } => {
+            assert_eq!(value.text, "h");
+            assert_eq!(value.encoding, Encoding::Utf16Le);
+            assert!(value.lossy, "a dangling half code unit is a lossy decode");
+            assert_eq!(value.raw, vec![0x00, b'h', 0x00, b'i']);
+        }
+        other => panic!("expected Data, got {other:?}"),
+    }
+}
+
+#[test]
+fn a_lone_surrogate_becomes_u_fffd_and_marks_the_value_lossy() {
+    // 0xD800 is a high surrogate with no low surrogate following it — not a
+    // scalar value, so it renders U+FFFD.
+    let mut key = b"_http://ex.com\x00".to_vec();
+    key.push(0x01);
+    key.extend_from_slice(b"k");
+    let out = decode_records(&[rec(&key, &[0x00, 0x00, 0xD8, b'z', 0x00])]);
+    match &out[0] {
+        LocalStorageRecord::Data { value, .. } => {
+            assert_eq!(value.text, "\u{FFFD}z");
+            assert_eq!(value.encoding, Encoding::Utf16Le);
+            assert!(value.lossy);
+        }
+        other => panic!("expected Data, got {other:?}"),
+    }
+}
+
+#[test]
 fn unknown_marker_is_lossy_but_never_panics() {
     let mut key = b"_http://ex.com\x00".to_vec();
     key.push(0x01);

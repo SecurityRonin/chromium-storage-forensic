@@ -78,6 +78,8 @@ pub(crate) fn parse(bytes: &[u8]) -> Result<CacheEntry, CacheError> {
         return Ok(entry);
     };
     let region_start = eof1 + fmt::EOF_LEN;
+    // The guard is kept as defence-in-depth: it is what makes the `bytes[..]`
+    // slice below infallible no matter how `find_eofs` is later changed.
     if region_start <= eof0 {
         let region = &bytes[region_start..eof0];
         let stream_size = le_u32(bytes, eof0 + fmt::EOF_STREAM_SIZE_OFFSET) as usize;
@@ -95,7 +97,7 @@ pub(crate) fn parse(bytes: &[u8]) -> Result<CacheEntry, CacheError> {
                 entry.key_sha256 = Some(arr);
             }
         }
-    }
+    } // cov:unreachable: find_eofs pushes an offset then advances `i += EOF_LEN` and never rewinds, so eofs[1] >= eofs[0] + EOF_LEN == region_start — this else arm cannot be taken.
 
     Ok(entry)
 }

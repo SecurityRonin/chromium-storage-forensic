@@ -172,3 +172,103 @@ fn valid_header_without_trailers_still_yields_the_url() {
     assert!(e.body.is_empty());
     assert!(e.status_line.is_none());
 }
+
+// ─── Hand-built entries: the stream/trailer edge shapes ──────────────────────
+//
+// Layout per `SimpleFileHeader` / `SimpleFileEOF` (Chromium `simple_entry_format.h`):
+// [header 24B][key][stream 1 body][EOF 24B][stream 0 pickle][key SHA-256?][EOF 24B].
+
+const INITIAL_MAGIC: u64 = 0xfcfb_6d1b_a772_5c30;
+const FINAL_MAGIC: u64 = 0xf4fa_6f45_970d_41d8;
+const FLAG_HAS_CRC32: u32 = 1 << 0;
+const FLAG_HAS_KEY_SHA256: u32 = 1 << 1;
+
+fn header(key: &[u8]) -> Vec<u8> {
+    let mut b = Vec::new();
+    b.extend_from_slice(&INITIAL_MAGIC.to_le_bytes());
+    b.extend_from_slice(&5u32.to_le_bytes()); // version
+    b.extend_from_slice(&(key.len() as u32).to_le_bytes());
+    b.extend_from_slice(&0u32.to_le_bytes()); // key_hash
+    b.extend_from_slice(&0u32.to_le_bytes()); // padding to HEADER_LEN
+    b.extend_from_slice(key);
+    b
+}
+
+fn eof(flags: u32, data_crc32: u32, stream_size: u32) -> Vec<u8> {
+    let mut t = Vec::new();
+    t.extend_from_slice(&FINAL_MAGIC.to_le_bytes());
+    t.extend_from_slice(&flags.to_le_bytes());
+    t.extend_from_slice(&data_crc32.to_le_bytes());
+    t.extend_from_slice(&stream_size.to_le_bytes());
+    t.extend_from_slice(&0u32.to_le_bytes()); // padding to EOF_LEN
+    t
+}
+
+#[test]
+fn a_single_trailer_yields_the_body_and_crc_but_no_response_info() {
+    // Stream 1 closed by its trailer, then the file ends: there is no stream-0
+    // region to read, so the body and its CRC survive and nothing is invented.
+    let mut buf = header(b"http://x/one.bin");
+    buf.extend_from_slice(b"BODY");
+    buf.extend_from_slice(&eof(FLAG_HAS_CRC32, 0x1234_5678, 4));
+    let e = parse_entry(&buf).expect("single-trailer entry parses");
+    assert_eq!(e.body, b"BODY");
+    assert_eq!(e.body_crc32, Some(0x1234_5678));
+    assert!(e.status_line.is_none());
+    assert!(e.key_sha256.is_none());
+    assert!(e.request_time_webkit_micros.is_none());
+}
+
+#[test]
+fn a_stream0_region_without_a_pickle_leaves_the_response_info_empty() {
+    // Two trailers with nothing between them: the stream-0 region is empty, so
+    // there is no "HTTP/" header block and no times to read. No CRC flag and no
+    // key-SHA-256 flag either — those fields must stay None, not zero.
+    let mut buf = header(b"http://x/two.bin");
+    buf.extend_from_slice(b"B");
+    buf.extend_from_slice(&eof(0, 0, 1));
+    buf.extend_from_slice(&eof(0, 0, 0));
+    let e = parse_entry(&buf).expect("empty stream-0 region parses");
+    assert_eq!(e.body, b"B");
+    assert_eq!(e.body_crc32, None, "no CRC32 flag means no CRC32");
+    assert!(e.status_line.is_none());
+    assert!(e.headers.is_empty());
+    assert!(e.key_sha256.is_none());
+    assert!(e.response_time_webkit_micros.is_none());
+}
+
+#[test]
+fn a_pickle_with_no_http_block_still_yields_the_times() {
+    // The pickle is present and carries request/response times at the fixed
+    // offsets, but the "HTTP/" header block is missing (truncated entry): the
+    // times survive and the status line stays None.
+    let mut pickle = vec![0u8; 28];
+    pickle[12..20].copy_from_slice(&13_300_000_000_000_000u64.to_le_bytes());
+    pickle[20..28].copy_from_slice(&13_300_000_000_000_001u64.to_le_bytes());
+    let mut buf = header(b"http://x/three.bin");
+    buf.extend_from_slice(b"B");
+    buf.extend_from_slice(&eof(0, 0, 1));
+    buf.extend_from_slice(&pickle);
+    buf.extend_from_slice(&eof(0, 0, pickle.len() as u32));
+    let e = parse_entry(&buf).expect("pickle-without-headers entry parses");
+    assert_eq!(e.request_time_webkit_micros, Some(13_300_000_000_000_000));
+    assert_eq!(e.response_time_webkit_micros, Some(13_300_000_000_000_001));
+    assert!(e.status_line.is_none());
+    assert!(e.headers.is_empty());
+}
+
+#[test]
+fn a_key_sha256_flag_with_truncated_bytes_leaves_the_hash_none() {
+    // The trailer claims a trailing key SHA-256 but the region holds only 4 of
+    // the 32 bytes: the hash must be reported absent rather than part-filled.
+    let pickle = b"HTTP/1.1 204 No Content\x00\x00";
+    let mut buf = header(b"http://x/four.bin");
+    buf.extend_from_slice(b"B");
+    buf.extend_from_slice(&eof(0, 0, 1));
+    buf.extend_from_slice(pickle);
+    buf.extend_from_slice(&[0xAA; 4]); // a truncated SHA-256
+    buf.extend_from_slice(&eof(FLAG_HAS_KEY_SHA256, 0, pickle.len() as u32));
+    let e = parse_entry(&buf).expect("truncated key-SHA-256 entry parses");
+    assert_eq!(e.status_line.as_deref(), Some("HTTP/1.1 204 No Content"));
+    assert_eq!(e.key_sha256, None, "a partial hash is no hash");
+}

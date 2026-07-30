@@ -127,3 +127,126 @@ fn empty_and_garbage_records_never_panic() {
         rec(&[0xff; 3], &[0xff; 3]),
     ]);
 }
+
+// ─── IDBKey decoding, tag by tag ─────────────────────────────────────────────
+//
+// The encoding is Chromium `indexed_db_leveldb_coding.cc` `EncodeIDBKey`: a
+// one-byte type tag then a type-specific body. `KeyPrefix(1,1,1)` (descriptor
+// 0x00, one byte per id, index id 1 = INDEX_ID_OBJECT_STORE_DATA) makes the
+// record an object-store *data* record, so `decode_records` decodes its tail.
+
+/// A data-record key: `KeyPrefix(1,1,1)` followed by the raw `IDBKey` bytes.
+fn data_key(idb_key: &[u8]) -> Vec<u8> {
+    let mut k = vec![0x00, 0x01, 0x01, 0x01];
+    k.extend_from_slice(idb_key);
+    k
+}
+
+/// The `IdbKey` a data record carrying `idb_key` in its tail decodes to.
+fn decoded_key(idb_key: &[u8]) -> IdbKey {
+    let out = decode_records(&[rec(&data_key(idb_key), &[])]);
+    assert_eq!(out.len(), 1, "expected one data record for {idb_key:02x?}");
+    out[0].key.clone()
+}
+
+#[test]
+fn decodes_the_null_and_min_key_tags() {
+    assert_eq!(decoded_key(&[0x00]), IdbKey::Null);
+    assert_eq!(decoded_key(&[0x05]), IdbKey::Min);
+}
+
+#[test]
+fn decodes_number_and_date_keys() {
+    // Both bodies are a raw little-endian f64; only the tag distinguishes them.
+    let mut number = vec![0x03];
+    number.extend_from_slice(&42.5f64.to_le_bytes());
+    assert_eq!(decoded_key(&number), IdbKey::Number(42.5));
+
+    let mut date = vec![0x02];
+    date.extend_from_slice(&1_700_000_000_000f64.to_le_bytes());
+    assert_eq!(decoded_key(&date), IdbKey::Date(1_700_000_000_000f64));
+}
+
+#[test]
+fn decodes_a_binary_key() {
+    // tag 0x06, varint length 3, then the bytes.
+    let key = decoded_key(&[0x06, 0x03, 0xde, 0xad, 0xbe]);
+    assert_eq!(key, IdbKey::Binary(vec![0xde, 0xad, 0xbe]));
+}
+
+#[test]
+fn decodes_a_nested_array_key() {
+    // tag 0x04, varint count 2, then Number(1.0) and String("z").
+    let mut key = vec![0x04, 0x02, 0x03];
+    key.extend_from_slice(&1.0f64.to_le_bytes());
+    key.extend_from_slice(&[0x01, 0x01, 0x00, b'z']); // string, 1 unit, UTF-16BE
+    assert_eq!(
+        decoded_key(&key),
+        IdbKey::Array(vec![IdbKey::Number(1.0), IdbKey::String("z".to_owned())])
+    );
+}
+
+#[test]
+fn an_unrecognised_key_tag_surfaces_the_raw_bytes() {
+    // 0x7f is not a defined IDBKey type byte: the tag and everything after it
+    // must reach the analyst verbatim rather than be silently dropped.
+    assert_eq!(
+        decoded_key(&[0x7f, 0x01, 0x02]),
+        IdbKey::Invalid(vec![0x7f, 0x01, 0x02])
+    );
+}
+
+#[test]
+fn an_empty_key_tail_is_invalid() {
+    // The key is exactly the KeyPrefix — there is no IDBKey to decode.
+    assert_eq!(decoded_key(&[]), IdbKey::Invalid(Vec::new()));
+}
+
+#[test]
+fn a_truncated_binary_key_is_invalid_not_a_panic() {
+    // Length field claims 8 bytes; only 1 is present.
+    assert_eq!(
+        decoded_key(&[0x06, 0x08, 0x01]),
+        IdbKey::Invalid(vec![0x06, 0x08, 0x01])
+    );
+}
+
+#[test]
+fn a_multi_byte_varint_length_is_read_in_full() {
+    // 200 body bytes → EncodeVarInt(200) = 0xC8 0x01 (a continuation group), so
+    // this drives the multi-byte path a single-byte length never reaches.
+    let body: Vec<u8> = (0..200u16).map(|i| i as u8).collect();
+    let mut key = vec![0x06, 0xC8, 0x01];
+    key.extend_from_slice(&body);
+    assert_eq!(decoded_key(&key), IdbKey::Binary(body));
+}
+
+#[test]
+fn a_varint_overflowing_u64_is_invalid_not_a_panic() {
+    // Eleven continuation bytes push the shift past 64: the length cannot be
+    // represented, so the key is surfaced raw instead of wrapping around.
+    let mut key = vec![0x06];
+    key.extend_from_slice(&[0x80; 11]);
+    assert_eq!(decoded_key(&key), IdbKey::Invalid(key));
+}
+
+#[test]
+fn object_store_metadata_other_than_the_name_is_not_read_as_the_name() {
+    // Two decoys for the object-store-name resolver, both under KeyPrefix(1,0,0)
+    // with OBJECT_STORE_META_TYPE (50):
+    //   * a *key path* metadata record (subtype 1, not OS_META_NAME 0);
+    //   * a truncated record whose os-id varint is missing entirely.
+    // Neither names object store 1, so the data record's name stays unresolved.
+    let key_path_meta = vec![0x00, 0x01, 0x00, 0x00, 50, 0x01, 0x01];
+    let truncated_meta = vec![0x00, 0x01, 0x00, 0x00, 50];
+    let out = decode_records(&[
+        rec(&key_path_meta, &[0x00, b'n']),
+        rec(&truncated_meta, &[0x00, b'n']),
+        rec(&data_key(&[0x00]), &[]),
+    ]);
+    assert_eq!(out.len(), 1, "only the data record is emitted");
+    assert_eq!(
+        out[0].object_store, None,
+        "key-path / truncated metadata must not be mistaken for the store name"
+    );
+}
