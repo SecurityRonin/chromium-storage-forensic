@@ -16,8 +16,8 @@ user-login = "fitzgen"
 user-name = "Nick Fitzgerald"
 
 [[publisher.forensicnomicon-core]]
-version = "1.5.0"
-when = "2026-07-29"
+version = "1.5.1"
+when = "2026-08-05"
 user-id = 347968
 user-login = "h4x0r"
 user-name = "Albert Hui"
