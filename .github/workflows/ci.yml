@@ -13,9 +13,56 @@ jobs:
   # fmt · clippy · test (3 OS) · MSRV · cargo-deny · cargo-vet · secret scan ·
   # fuzz build-check · rustdoc · 100% per-line coverage · path-dep gate.
   #
-  # No inputs: this repo already enforced a 100% per-line gate at
-  # `--workspace --all-features`, which is exactly the shared workflow's default,
-  # and MSRV is read from rust-version. Anything that needed configuring would be
-  # a behaviour change smuggled in by an adoption PR, so there is nothing here.
+  # This workspace's members do NOT share one floor, and the shared workflow
+  # assumes they do: it derives the MSRV as the LOWEST member `rust-version`
+  # and then builds the WHOLE workspace at it. Here that resolves to
+  # `cargo +1.80 build --workspace`, which is guaranteed to fail — the
+  # indexeddb reader pulls blob-decoder/time, whose own manifests require 1.85+
+  # (edition 2024), so the build dies parsing a dependency manifest before
+  # reaching any of this repo's code. The floors are heterogeneous by design,
+  # not by accident:
+  #
+  #   chromium-storage-cache        1.80 — graph needs 1.75 (safe-read)
+  #   chromium-storage-localstorage 1.87 — graph needs 1.80 (leveldb-core)
+  #   chromium-storage-indexeddb    1.88 — graph needs 1.88 (time-macros)
+  #
+  # So the workspace-wide floor is the HIGHEST member floor, 1.88, and that is
+  # what this job verifies. Restating the number here is the thing the shared
+  # workflow's `msrv` input warns about, so the low floors are not left on trust:
+  # the two jobs below build each low-MSRV member at exactly the version it
+  # promises downstreams. Together they verify every declared `rust-version` in
+  # the workspace — the same coverage the hand-written jobs gave before this
+  # repo adopted the shared workflow, which is why they are restored rather
+  # than dropped.
   ci:
     uses: SecurityRonin/fleet-ci/.github/workflows/rust-ci.yml@a62ab10603151071744cec0b4e3638aa6406d4e4
+    with:
+      msrv: "1.88"
+
+  # The cache reader promises a LOW MSRV (a crates.io compatibility signal).
+  # Nothing in its own graph outruns 1.80, so the promise is verifiable — and
+  # unverified is how it would quietly stop being true.
+  msrv-cache:
+    name: Library MSRV (1.80) — chromium-storage-cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c # master
+        with:
+          toolchain: "1.80"
+      - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+      # `+1.80` explicitly: rust-toolchain.toml pins the DEV toolchain, and
+      # without the override it silently wins and this job verifies nothing.
+      - run: cargo +1.80 build -p chromium-storage-cache
+
+  # Same for the localstorage reader's 1.87 promise.
+  msrv-localstorage:
+    name: Library MSRV (1.87) — chromium-storage-localstorage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c # master
+        with:
+          toolchain: "1.87"
+      - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+      - run: cargo +1.87 build -p chromium-storage-localstorage
