@@ -51,6 +51,8 @@ jobs:
         with:
           toolchain: "1.80"
       - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          cache-on-failure: true
       # `+1.80` explicitly: rust-toolchain.toml pins the DEV toolchain, and
       # without the override it silently wins and this job verifies nothing.
       - run: cargo +1.80 build -p chromium-storage-cache
@@ -65,4 +67,6 @@ jobs:
         with:
           toolchain: "1.87"
       - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          cache-on-failure: true
       - run: cargo +1.87 build -p chromium-storage-localstorage
