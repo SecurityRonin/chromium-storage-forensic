@@ -17,7 +17,7 @@ members = [
 # Single source of truth for fields shared by every member (DRY): bump version /
 # edition / license here once; members inherit via `field.workspace = true`.
 [workspace.package]
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 license = "Apache-2.0"
 repository = "https://github.com/SecurityRonin/chromium-storage-forensic"
@@ -29,9 +29,9 @@ forensicnomicon-core = "1.5"
 # The normalized report model — the -forensic analyzers emit findings through it.
 forensicnomicon = "1"
 # Per-format reader/analyzer members.
-chromium-storage-cache-core = { version = "0.1.1", path = "chromium-storage-cache-core" }
-chromium-storage-indexeddb-core = { version = "0.1.1", path = "chromium-storage-indexeddb-core" }
-chromium-storage-localstorage-core = { version = "0.1.1", path = "chromium-storage-localstorage-core" }
+chromium-storage-cache-core = { version = "0.2.0", path = "chromium-storage-cache-core" }
+chromium-storage-indexeddb-core = { version = "0.2.0", path = "chromium-storage-indexeddb-core" }
+chromium-storage-localstorage-core = { version = "0.2.0", path = "chromium-storage-localstorage-core" }
 # Integrity recomputation for the analyzers (self-validating findings).
 crc32fast = "1"
 sha2 = "0.10"

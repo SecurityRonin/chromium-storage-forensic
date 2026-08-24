@@ -6,6 +6,12 @@ All notable changes to this crate are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0](https://github.com/SecurityRonin/chromium-storage-forensic/compare/chromium-storage-indexeddb-core-v0.1.1...chromium-storage-indexeddb-core-v0.2.0) - 2026-08-24
+
+### Other
+
+- make each chromium-storage parser a core/forensic pair ([#11](https://github.com/SecurityRonin/chromium-storage-forensic/pull/11))
+
 ## [0.1.1](https://github.com/SecurityRonin/chromium-storage-forensic/releases/tag/chromium-storage-indexeddb-v0.1.1) - 2026-08-04
 
 ### Changed
