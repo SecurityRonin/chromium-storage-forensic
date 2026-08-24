@@ -187,3 +187,36 @@ pub fn analyze(records: &[LocalStorageRecord]) -> Vec<LsAnomaly> {
 
     out
 }
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
+mod metadata_tests {
+    use super::*;
+
+    #[test]
+    fn every_anomaly_variant_exposes_metadata() {
+        let kinds = [
+            LsAnomalyKind::ImplausibleMetaTimestamp {
+                origin: "https://e.example".to_owned(),
+                timestamp_webkit_micros: 1,
+            },
+            LsAnomalyKind::OrphanedData {
+                origin: "https://e.example".to_owned(),
+            },
+        ];
+        for kind in kinds {
+            // Direct accessors — every match arm of severity/category/code/note.
+            let _ = kind.severity();
+            let _ = kind.category();
+            assert!(!kind.code().is_empty());
+            assert!(!kind.note().is_empty());
+
+            // The `Observation` impl delegates; exercise each method through it.
+            let obs = LsAnomaly::new(kind.clone());
+            assert!(Observation::severity(&obs).is_some());
+            assert_eq!(Observation::code(&obs), kind.code());
+            assert_eq!(Observation::note(&obs), kind.note());
+            let _ = Observation::category(&obs);
+        }
+    }
+}

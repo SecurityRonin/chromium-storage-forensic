@@ -177,3 +177,58 @@ pub fn analyze_record(record: &IndexedDbRecord) -> Vec<IdbAnomaly> {
 pub fn analyze(records: &[IndexedDbRecord]) -> Vec<IdbAnomaly> {
     records.iter().flat_map(analyze_record).collect()
 }
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
+mod metadata_tests {
+    use super::*;
+
+    #[test]
+    fn every_anomaly_variant_exposes_metadata() {
+        let kinds = [
+            IdbAnomalyKind::ValueUndecodable {
+                database_id: 1,
+                object_store_id: 2,
+                error: "x".to_owned(),
+            },
+            IdbAnomalyKind::OrphanedRecord {
+                database_id: 1,
+                object_store_id: 2,
+                database_resolved: false,
+                object_store_resolved: false,
+            },
+            IdbAnomalyKind::OrphanedRecord {
+                database_id: 1,
+                object_store_id: 2,
+                database_resolved: false,
+                object_store_resolved: true,
+            },
+            IdbAnomalyKind::OrphanedRecord {
+                database_id: 1,
+                object_store_id: 2,
+                database_resolved: true,
+                object_store_resolved: false,
+            },
+            IdbAnomalyKind::OrphanedRecord {
+                database_id: 1,
+                object_store_id: 2,
+                database_resolved: true,
+                object_store_resolved: true,
+            },
+        ];
+        for kind in kinds {
+            // Direct accessors — every match arm of severity/category/code/note.
+            let _ = kind.severity();
+            let _ = kind.category();
+            assert!(!kind.code().is_empty());
+            assert!(!kind.note().is_empty());
+
+            // The `Observation` impl delegates; exercise each method through it.
+            let obs = IdbAnomaly::new(kind.clone());
+            assert!(Observation::severity(&obs).is_some());
+            assert_eq!(Observation::code(&obs), kind.code());
+            assert_eq!(Observation::note(&obs), kind.note());
+            let _ = Observation::category(&obs);
+        }
+    }
+}

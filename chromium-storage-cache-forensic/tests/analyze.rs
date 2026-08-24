@@ -49,3 +49,49 @@ fn a_corrupted_body_is_caught() {
         "a body edit must trip the CRC-32 integrity check"
     );
 }
+
+#[test]
+fn an_entry_without_integrity_fields_yields_nothing() {
+    // No stored CRC, no key hash, no timestamps: every check skips its `if let`
+    // and the analyzer returns empty — the None/skip path of each check.
+    let mut e = entry("ea2e47cbdc22305e_0");
+    e.body_crc32 = None;
+    e.key_sha256 = None;
+    e.request_time_webkit_micros = None;
+    e.response_time_webkit_micros = None;
+    assert!(
+        analyze(&e).is_empty(),
+        "an entry carrying no integrity fields has nothing to contradict"
+    );
+}
+
+#[test]
+fn a_mismatched_key_sha256_is_caught() {
+    // Stamp a key SHA-256 that cannot be the hash of the real key: the
+    // key-integrity check must fire (positive control for the SHA path).
+    let mut e = entry("ea2e47cbdc22305e_0");
+    e.key_sha256 = Some([0xAB; 32]);
+    let findings = analyze(&e);
+    assert!(
+        findings
+            .iter()
+            .any(|f| matches!(f.kind, CacheAnomalyKind::KeySha256Mismatch)),
+        "a key SHA-256 that disagrees with the stored key must trip the key-integrity check"
+    );
+}
+
+#[test]
+fn a_response_before_request_is_caught() {
+    // Response time earlier than request time is impossible for a real fetch:
+    // the timeline check must fire (positive control for the timeline path).
+    let mut e = entry("ea2e47cbdc22305e_0");
+    e.request_time_webkit_micros = Some(1_000);
+    e.response_time_webkit_micros = Some(500);
+    let findings = analyze(&e);
+    assert!(
+        findings
+            .iter()
+            .any(|f| matches!(f.kind, CacheAnomalyKind::ResponseBeforeRequest { .. })),
+        "a response earlier than its request must trip the timeline check"
+    );
+}

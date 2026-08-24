@@ -113,10 +113,6 @@ criteria = "safe-to-deploy"
 version = "0.3.103"
 criteria = "safe-to-deploy"
 
-[[exemptions.libc]]
-version = "0.2.189"
-criteria = "safe-to-run"
-
 [[exemptions.linux-raw-sys]]
 version = "0.12.1"
 criteria = "safe-to-run"

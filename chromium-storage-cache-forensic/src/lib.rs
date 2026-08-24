@@ -177,3 +177,38 @@ pub fn analyze(entry: &CacheEntry) -> Vec<CacheAnomaly> {
 
     out
 }
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used)]
+mod metadata_tests {
+    use super::*;
+
+    #[test]
+    fn every_anomaly_variant_exposes_metadata() {
+        let kinds = [
+            CacheAnomalyKind::BodyCrc32Mismatch {
+                stored: 1,
+                computed: 2,
+            },
+            CacheAnomalyKind::KeySha256Mismatch,
+            CacheAnomalyKind::ResponseBeforeRequest {
+                request_micros: 10,
+                response_micros: 5,
+            },
+        ];
+        for kind in kinds {
+            // Direct accessors — every match arm of severity/category/code/note.
+            let _ = kind.severity();
+            let _ = kind.category();
+            assert!(!kind.code().is_empty());
+            assert!(!kind.note().is_empty());
+
+            // The `Observation` impl delegates; exercise each method through it.
+            let obs = CacheAnomaly::new(kind.clone());
+            assert!(Observation::severity(&obs).is_some());
+            assert_eq!(Observation::code(&obs), kind.code());
+            assert_eq!(Observation::note(&obs), kind.note());
+            let _ = Observation::category(&obs);
+        }
+    }
+}
