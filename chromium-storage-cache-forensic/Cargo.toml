@@ -1,0 +1,24 @@
+[package]
+name = "chromium-storage-cache-forensic"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Chromium Simple Cache tamper analyzer — graded findings (body CRC / key SHA-256 integrity, response-before-request timeline) over the chromium-storage-cache-core reader. Re-exports the full reader surface."
+repository.workspace = true
+authors.workspace = true
+readme = "README.md"
+keywords = ["forensics", "chromium", "cache", "dfir", "browser"]
+categories = ["parser-implementations"]
+
+[lib]
+name = "chromium_storage_cache_forensic"
+path = "src/lib.rs"
+
+[dependencies]
+chromium-storage-cache-core = { workspace = true }
+forensicnomicon = { workspace = true }
+crc32fast = { workspace = true }
+sha2 = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,9 +1,17 @@
 [workspace]
 resolver = "2"
 members = [
+    # Every parser is a reader (-core) + a backward-compat facade + an analyzer
+    # (-forensic): the read/analyze split ADR-0008 mandates, per format.
+    "chromium-storage-cache-core",
     "chromium-storage-cache",
+    "chromium-storage-cache-forensic",
+    "chromium-storage-indexeddb-core",
     "chromium-storage-indexeddb",
+    "chromium-storage-indexeddb-forensic",
+    "chromium-storage-localstorage-core",
     "chromium-storage-localstorage",
+    "chromium-storage-localstorage-forensic",
 ]
 
 # Single source of truth for fields shared by every member (DRY): bump version /
@@ -18,6 +26,15 @@ authors = ["Albert Hui <albert@securityronin.com>"]
 [workspace.dependencies]
 # Fleet crates: published on crates.io — registry versions (honest carets, no path).
 forensicnomicon-core = "1.5"
+# The normalized report model — the -forensic analyzers emit findings through it.
+forensicnomicon = "1"
+# Per-format reader/analyzer members.
+chromium-storage-cache-core = { version = "0.1.1", path = "chromium-storage-cache-core" }
+chromium-storage-indexeddb-core = { version = "0.1.1", path = "chromium-storage-indexeddb-core" }
+chromium-storage-localstorage-core = { version = "0.1.1", path = "chromium-storage-localstorage-core" }
+# Integrity recomputation for the analyzers (self-validating findings).
+crc32fast = "1"
+sha2 = "0.10"
 # Panic-free bounded integer readers over untrusted bytes (the shared front door).
 safe-read = "0.2"
 # Raw, read-only LevelDB record reader (surfaces tombstones + sequence numbers).

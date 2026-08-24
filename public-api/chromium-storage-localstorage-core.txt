@@ -1,0 +1,30 @@
+pub mod chromium_storage_localstorage_core
+pub enum chromium_storage_localstorage_core::Encoding
+pub chromium_storage_localstorage_core::Encoding::Empty
+pub chromium_storage_localstorage_core::Encoding::Latin1
+pub chromium_storage_localstorage_core::Encoding::Unknown(u8)
+pub chromium_storage_localstorage_core::Encoding::Utf16Le
+pub enum chromium_storage_localstorage_core::LocalStorageRecord
+pub chromium_storage_localstorage_core::LocalStorageRecord::Data
+pub chromium_storage_localstorage_core::LocalStorageRecord::Data::deleted: bool
+pub chromium_storage_localstorage_core::LocalStorageRecord::Data::origin: alloc::string::String
+pub chromium_storage_localstorage_core::LocalStorageRecord::Data::script_key: chromium_storage_localstorage_core::StorageValue
+pub chromium_storage_localstorage_core::LocalStorageRecord::Data::seq: u64
+pub chromium_storage_localstorage_core::LocalStorageRecord::Data::value: chromium_storage_localstorage_core::StorageValue
+pub chromium_storage_localstorage_core::LocalStorageRecord::Meta
+pub chromium_storage_localstorage_core::LocalStorageRecord::Meta::deleted: bool
+pub chromium_storage_localstorage_core::LocalStorageRecord::Meta::origin: alloc::string::String
+pub chromium_storage_localstorage_core::LocalStorageRecord::Meta::seq: u64
+pub chromium_storage_localstorage_core::LocalStorageRecord::Meta::size: core::option::Option<u64>
+pub chromium_storage_localstorage_core::LocalStorageRecord::Meta::timestamp_webkit_micros: u64
+pub chromium_storage_localstorage_core::LocalStorageRecord::Other
+pub chromium_storage_localstorage_core::LocalStorageRecord::Other::deleted: bool
+pub chromium_storage_localstorage_core::LocalStorageRecord::Other::key: alloc::vec::Vec<u8>
+pub chromium_storage_localstorage_core::LocalStorageRecord::Other::seq: u64
+pub struct chromium_storage_localstorage_core::StorageValue
+pub chromium_storage_localstorage_core::StorageValue::encoding: chromium_storage_localstorage_core::Encoding
+pub chromium_storage_localstorage_core::StorageValue::lossy: bool
+pub chromium_storage_localstorage_core::StorageValue::raw: alloc::vec::Vec<u8>
+pub chromium_storage_localstorage_core::StorageValue::text: alloc::string::String
+pub fn chromium_storage_localstorage_core::decode_records(&[leveldb_core::record::Record]) -> alloc::vec::Vec<chromium_storage_localstorage_core::LocalStorageRecord>
+pub fn chromium_storage_localstorage_core::read_dir(&std::path::Path) -> core::result::Result<alloc::vec::Vec<chromium_storage_localstorage_core::LocalStorageRecord>, leveldb_core::error::Error>

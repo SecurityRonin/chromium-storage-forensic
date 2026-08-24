@@ -6,7 +6,7 @@
 //! directory (see `tests/data/README.md`). The known writes are the ground truth.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use chromium_storage_localstorage::{decode_records, read_dir, Encoding, LocalStorageRecord};
+use chromium_storage_localstorage_core::{decode_records, read_dir, Encoding, LocalStorageRecord};
 use leveldb_core::Record;
 use std::path::PathBuf;
 

@@ -7,8 +7,10 @@
 //! Those known writes are the ground truth.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use chromium_storage_indexeddb::V8Value;
-use chromium_storage_indexeddb::{decode_records, read_dir, IdbKey, IndexedDbRecord, RecordValue};
+use chromium_storage_indexeddb_core::V8Value;
+use chromium_storage_indexeddb_core::{
+    decode_records, read_dir, IdbKey, IndexedDbRecord, RecordValue,
+};
 use leveldb_core::Record;
 use std::path::PathBuf;
 

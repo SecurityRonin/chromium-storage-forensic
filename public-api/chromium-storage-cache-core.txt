@@ -1,0 +1,26 @@
+pub mod chromium_storage_cache_core
+#[non_exhaustive] pub enum chromium_storage_cache_core::CacheError
+pub chromium_storage_cache_core::CacheError::BadMagic
+pub chromium_storage_cache_core::CacheError::BadMagic::found: [u8; 8]
+pub chromium_storage_cache_core::CacheError::KeyLengthOutOfRange
+pub chromium_storage_cache_core::CacheError::KeyLengthOutOfRange::available: usize
+pub chromium_storage_cache_core::CacheError::KeyLengthOutOfRange::key_length: u64
+pub chromium_storage_cache_core::CacheError::TooShort
+pub chromium_storage_cache_core::CacheError::TooShort::available: usize
+impl core::error::Error for chromium_storage_cache_core::CacheError
+impl core::fmt::Display for chromium_storage_cache_core::CacheError
+pub fn chromium_storage_cache_core::CacheError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct chromium_storage_cache_core::CacheEntry
+pub chromium_storage_cache_core::CacheEntry::body: alloc::vec::Vec<u8>
+pub chromium_storage_cache_core::CacheEntry::body_crc32: core::option::Option<u32>
+pub chromium_storage_cache_core::CacheEntry::headers: alloc::vec::Vec<(alloc::string::String, alloc::string::String)>
+pub chromium_storage_cache_core::CacheEntry::key: alloc::string::String
+pub chromium_storage_cache_core::CacheEntry::key_hash: u32
+pub chromium_storage_cache_core::CacheEntry::key_sha256: core::option::Option<[u8; 32]>
+pub chromium_storage_cache_core::CacheEntry::request_time_webkit_micros: core::option::Option<u64>
+pub chromium_storage_cache_core::CacheEntry::response_time_webkit_micros: core::option::Option<u64>
+pub chromium_storage_cache_core::CacheEntry::status_line: core::option::Option<alloc::string::String>
+pub chromium_storage_cache_core::CacheEntry::url: alloc::string::String
+pub chromium_storage_cache_core::CacheEntry::version: u32
+pub fn chromium_storage_cache_core::parse_entry(&[u8]) -> core::result::Result<chromium_storage_cache_core::CacheEntry, chromium_storage_cache_core::CacheError>
+pub fn chromium_storage_cache_core::read_dir(&std::path::Path) -> std::io::error::Result<alloc::vec::Vec<(std::path::PathBuf, core::result::Result<chromium_storage_cache_core::CacheEntry, chromium_storage_cache_core::CacheError>)>>
