@@ -1,0 +1,27 @@
+pub mod chromium_storage_indexeddb_core
+pub use chromium_storage_indexeddb_core::V8Value
+pub enum chromium_storage_indexeddb_core::IdbKey
+pub chromium_storage_indexeddb_core::IdbKey::Array(alloc::vec::Vec<chromium_storage_indexeddb_core::IdbKey>)
+pub chromium_storage_indexeddb_core::IdbKey::Binary(alloc::vec::Vec<u8>)
+pub chromium_storage_indexeddb_core::IdbKey::Date(f64)
+pub chromium_storage_indexeddb_core::IdbKey::Invalid(alloc::vec::Vec<u8>)
+pub chromium_storage_indexeddb_core::IdbKey::Min
+pub chromium_storage_indexeddb_core::IdbKey::Null
+pub chromium_storage_indexeddb_core::IdbKey::Number(f64)
+pub chromium_storage_indexeddb_core::IdbKey::String(alloc::string::String)
+pub enum chromium_storage_indexeddb_core::RecordValue
+pub chromium_storage_indexeddb_core::RecordValue::Undecoded
+pub chromium_storage_indexeddb_core::RecordValue::Undecoded::error: alloc::string::String
+pub chromium_storage_indexeddb_core::RecordValue::Undecoded::raw: alloc::vec::Vec<u8>
+pub chromium_storage_indexeddb_core::RecordValue::V8(blob_decoder::v8_value::V8Value)
+pub struct chromium_storage_indexeddb_core::IndexedDbRecord
+pub chromium_storage_indexeddb_core::IndexedDbRecord::database: core::option::Option<alloc::string::String>
+pub chromium_storage_indexeddb_core::IndexedDbRecord::database_id: u64
+pub chromium_storage_indexeddb_core::IndexedDbRecord::deleted: bool
+pub chromium_storage_indexeddb_core::IndexedDbRecord::key: chromium_storage_indexeddb_core::IdbKey
+pub chromium_storage_indexeddb_core::IndexedDbRecord::object_store: core::option::Option<alloc::string::String>
+pub chromium_storage_indexeddb_core::IndexedDbRecord::object_store_id: u64
+pub chromium_storage_indexeddb_core::IndexedDbRecord::seq: u64
+pub chromium_storage_indexeddb_core::IndexedDbRecord::value: chromium_storage_indexeddb_core::RecordValue
+pub fn chromium_storage_indexeddb_core::decode_records(&[leveldb_core::record::Record]) -> alloc::vec::Vec<chromium_storage_indexeddb_core::IndexedDbRecord>
+pub fn chromium_storage_indexeddb_core::read_dir(&std::path::Path) -> core::result::Result<alloc::vec::Vec<chromium_storage_indexeddb_core::IndexedDbRecord>, leveldb_core::error::Error>
