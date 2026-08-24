@@ -1,9 +1,9 @@
 [package]
-name = "chromium-storage-indexeddb"
+name = "chromium-storage-indexeddb-forensic"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Chromium storage indexeddb reader — backward-compatible facade re-exporting chromium-storage-indexeddb-core (split into a -core reader + a -forensic analyzer). New consumers should depend on chromium-storage-indexeddb-core directly."
+description = "Chromium IndexedDB tamper analyzer — graded findings (undecodable Blink/V8 values, records orphaned from their database/object-store metadata) over the chromium-storage-indexeddb-core reader. Re-exports the full reader surface."
 repository.workspace = true
 authors.workspace = true
 readme = "README.md"
@@ -11,11 +11,12 @@ keywords = ["forensics", "chromium", "indexeddb", "dfir", "browser"]
 categories = ["parser-implementations"]
 
 [lib]
-name = "chromium_storage_indexeddb"
+name = "chromium_storage_indexeddb_forensic"
 path = "src/lib.rs"
 
 [dependencies]
 chromium-storage-indexeddb-core = { workspace = true }
+forensicnomicon = { workspace = true }
 
 [lints]
 workspace = true

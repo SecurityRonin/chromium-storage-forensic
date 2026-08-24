@@ -7,7 +7,7 @@
 //! (google.com telemetry) used to confirm the layout generalises.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use chromium_storage_cache::{parse_entry, read_dir, CacheEntry, CacheError};
+use chromium_storage_cache_core::{parse_entry, read_dir, CacheEntry, CacheError};
 use std::path::PathBuf;
 
 fn data_dir() -> PathBuf {

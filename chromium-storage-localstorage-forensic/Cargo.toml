@@ -1,0 +1,22 @@
+[package]
+name = "chromium-storage-localstorage-forensic"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Chromium Local Storage tamper analyzer — graded findings (implausibly early META timestamps, data records orphaned from their origin metadata, keys matching neither shape) over the chromium-storage-localstorage-core reader. Re-exports the full reader surface."
+repository.workspace = true
+authors.workspace = true
+readme = "README.md"
+keywords = ["forensics", "chromium", "localstorage", "dfir", "browser"]
+categories = ["parser-implementations"]
+
+[lib]
+name = "chromium_storage_localstorage_forensic"
+path = "src/lib.rs"
+
+[dependencies]
+chromium-storage-localstorage-core = { workspace = true }
+forensicnomicon = { workspace = true }
+
+[lints]
+workspace = true
