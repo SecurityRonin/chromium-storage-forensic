@@ -17,7 +17,7 @@ members = [
 # Single source of truth for fields shared by every member (DRY): bump version /
 # edition / license here once; members inherit via `field.workspace = true`.
 [workspace.package]
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 license = "Apache-2.0"
 repository = "https://github.com/SecurityRonin/chromium-storage-forensic"
